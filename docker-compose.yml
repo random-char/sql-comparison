@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  app:
+    image: golang:latest
+    env_file: ".env"
+    working_dir: /app
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    networks:
+      - local
+
+  postgres:
+    image: postgres:latest
+    env_file: ".env"
+    environment:
+      - POSTGRES_USER=${DB_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${DB_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${DB_POSTGRES_DATABASE}
+      - DATABASE_HOST=${DB_POSTGRES_HOST}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - local
+
+volumes:
+  pg_data:
+
+networks:
+  local:
+    driver: bridge
+
